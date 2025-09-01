@@ -1,0 +1,15 @@
+[Unit]
+Description=Comercializadora Ibarra - Admin Helper
+After=network.target
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/var/www/comercializadoraibarra.online
+EnvironmentFile=/etc/comercializadoraibarra.env
+ExecStart=/usr/bin/node server/admin.js
+Restart=on-failure
+RestartSec=5s
+
+[Install]
+WantedBy=multi-user.target

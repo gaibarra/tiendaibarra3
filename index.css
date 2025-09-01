@@ -1,0 +1,73 @@
+/* Global styles for product mobile layout */
+/* Product image container: keep aspect ratio, center, and avoid cropping */
+.product-image { width: 100%; aspect-ratio: 1 / 1; background: #fafafa; padding: 1rem; border-radius: 10px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+.product-image img, .product-image > img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+
+/* Price styling: responsive size and strong emphasis */
+.price { font-size: clamp(1.25rem, 5vw, 1.75rem); font-weight: 700; color: var(--color-primary, #0b63d6); margin: 0; }
+
+/* Primary Add to cart CTA */
+.add-to-cart { display: block; width: 100%; padding: 0.9rem; border-radius: 10px; background: var(--color-primary, #0b63d6); color: #fff; text-align: center; font-weight: 600; box-shadow: 0 6px 14px rgba(11,99,214,0.12); border: none; cursor: pointer; transition: transform .08s ease, box-shadow .12s ease; }
+.add-to-cart:active { transform: translateY(1px); }
+.add-to-cart[disabled] { opacity: 0.6; cursor: not-allowed; }
+
+/* Variant and quantity touch targets */
+.variant-btn, .qty-btn { min-height: 44px; min-width: 44px; padding: 0.4rem 0.8rem; border-radius: 8px; }
+.variant-btn[aria-pressed="true"] { background: var(--color-primary, #214f95); color: #fff; box-shadow: inset 0 -3px rgba(0,0,0,0.06); }
+
+/* Safe-area / bottom nav: ensure content isn't covered on phones with home indicator */
+:root { --bottom-nav-height: 72px; --mobile-cta-height: 56px; }
+body { padding-bottom: env(safe-area-inset-bottom); }
+/* Add this class to your main content wrapper when a bottom nav exists */
+.content-with-bottom-nav, #root { padding-bottom: calc(var(--bottom-nav-height) + var(--mobile-cta-height) + env(safe-area-inset-bottom)); }
+
+/* Mobile sticky CTA: restrict to actual product page where .product-page wrapper is present */
+	@media (max-width: 640px) {
+	.product-page .mobile-cta .add-to-cart {
+		position: fixed;
+		left: 12px;
+		right: 12px;
+		/* place the CTA above the bottom navigation bar so it doesn't cover its buttons */
+		bottom: calc(var(--bottom-nav-height) + env(safe-area-inset-bottom) + 12px);
+		z-index: 60;
+		height: var(--mobile-cta-height);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 0 1rem;
+		border-radius: 12px;
+	}
+	/* Ensure any page content is not covered by the CTA when .mobile-cta is present */
+		.product-page .mobile-cta ~ * { padding-bottom: calc(var(--mobile-cta-height) + env(safe-area-inset-bottom)); }
+}
+
+/* Small polish */
+.product-card { gap: 1rem; }
+@media (min-width: 640px) { .product-image { padding: 1.25rem; } }
+
+/* Slow pulse animation for welcome logo */
+@keyframes pulse-slow {
+	0% { transform: scale(1); }
+	50% { transform: scale(1.06); }
+	100% { transform: scale(1); }
+}
+.animate-pulse-slow { animation: pulse-slow 1600ms ease-in-out infinite; }
+
+/* Header search input visibility */
+.header-search { color: var(--color-text, #111827); z-index: 70; }
+.header-search::placeholder { color: #6b7280; opacity: 1; }
+@media (max-width: 640px) {
+	.header-search { padding-left: 0.75rem; padding-right: 0.75rem; }
+}
+
+/* When the cart overlay/drawer is open hide page-level search and CTA so they don't sit on top of the cart */
+.cart-open .header-search { display: none !important; }
+.cart-open .mobile-cta .add-to-cart { display: none !important; }
+
+
+/* Make product images visually smaller on narrow screens while preserving aspect ratio and accessibility */
+@media (max-width: 640px) {
+	.product-image { padding: 0.75rem; }
+	/* reduce the visual footprint of the image inside the product container */
+	.product-image img, .product-image > img { max-width: 80%; }
+}

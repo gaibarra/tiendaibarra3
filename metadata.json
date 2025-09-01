@@ -1,0 +1,5 @@
+{
+  "name": "Tienda en Línea con Carrito",
+  "description": "Una aplicación de tienda en línea completa con un carrito de compras, un panel de administración para gestionar productos, inventario y personalización de la marca. Los clientes pueden generar un PDF de su pedido y enviarlo a través de WhatsApp.",
+  "requestFramePermissions": []
+}
