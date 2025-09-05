@@ -18,6 +18,21 @@ View your app in AI Studio: https://ai.studio/apps/drive/1040E1_wehpyecgx_1IKvFg
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+### Seguridad del Panel de Administración
+
+Se añadió una lista blanca de correos para el acceso al panel:
+
+1. Crea / actualiza tu archivo `.env` con:
+
+```
+VITE_ADMIN_EMAILS=admin1@tu-dominio.com,admin2@tu-dominio.com
+VITE_FORCE_LOGOUT_ON_START=1 # opcional: fuerza cerrar sesión previa cada carga
+```
+
+2. Rebuild de la app para que Vite inyecte el valor.
+
+Los correos no incluidos verán un mensaje de "Acceso restringido" aunque inicien sesión o adivinen la ruta `/admin`.
 # tiendaibarra2
 # tiendaibarra2
 # tiendaibarra3

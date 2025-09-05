@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useShop } from '../contexts/ShopContext';
 import { CompanyInfo } from '../types';
+import { useBranding } from '../contexts/BrandingContext';
+import { getContrastColor } from '../utils/colors';
 
 interface InputFieldProps {
     label: string;
@@ -27,9 +29,12 @@ const InputField: React.FC<InputFieldProps> = ({ label, name, value, type="text"
 
 const CompanyInfoAdmin: React.FC = () => {
     const { companyInfo, updateCompanyInfo } = useShop();
+    const { branding } = useBranding();
     const [localInfo, setLocalInfo] = useState(companyInfo);
     const [isSaving, setIsSaving] = useState(false);
     const [saveSuccess, setSaveSuccess] = useState(false);
+
+    const primaryButtonTextColor = getContrastColor(branding.primary_color);
 
     useEffect(() => {
         setLocalInfo(companyInfo);
@@ -61,7 +66,7 @@ const CompanyInfoAdmin: React.FC = () => {
 
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-4">Información de la Empresa</h2>
+            <h2 className="text-2xl font-bold mb-4 text-[var(--color-text)]">Información de la Empresa</h2>
             <div className="space-y-4 max-w-lg">
                 <InputField label="Nombre de la Empresa" name="name" value={localInfo.name} onChange={handleChange} />
                 <InputField label="Dirección" name="address" value={localInfo.address} onChange={handleChange} />
@@ -72,7 +77,8 @@ const CompanyInfoAdmin: React.FC = () => {
                     <button
                         onClick={handleSave}
                         disabled={isSaving}
-                        className="px-6 py-2 bg-[var(--color-primary)] text-white rounded-md shadow-sm hover:opacity-90 disabled:bg-gray-400"
+                        className="px-6 py-2 bg-[var(--color-primary)] rounded-md shadow-sm hover:opacity-90 disabled:bg-gray-400"
+                        style={{ color: primaryButtonTextColor }}
                     >
                         {isSaving ? 'Guardando...' : 'Guardar Cambios'}
                     </button>

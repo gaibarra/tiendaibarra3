@@ -1,27 +1,22 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
-<head>
+  <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Tienda en Línea</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script type="importmap">
-{
-  "imports": {
-    "react/": "https://esm.sh/react@^19.1.1/",
-    "react": "https://esm.sh/react@^19.1.1",
-    "react-dom/": "https://esm.sh/react-dom@^19.1.1/",
-    "react-router-dom": "https://esm.sh/react-router-dom@^7.8.2",
-    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@^2.45.0"
-  }
-}
-</script>
-<link rel="stylesheet" href="/index.css">
-</head>
-<body class="bg-gray-50">
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tienda Ibarra 3</title>
+  <link rel="icon" type="image/png" href="/logo-ibarra.png" />
+    <!-- Para apuntar a otra base de API de tips (ej: subdominio), definir global antes del bundle -->
+    <script>
+      // Base para endpoint de tips en producción (admin server detrás de nginx)
+      window.__TIPS_API_BASE__ = '/admin-api';
+    </script>
+
+  <!-- Tailwind CDN (restaurado temporalmente) -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- NOTA: Para volver a build local quitar script anterior y usar tailwind.css -->
+  </head>
+  <body>
     <div id="root"></div>
-    <script type="module" src="/index.tsx"></script>
-</body>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
 </html>

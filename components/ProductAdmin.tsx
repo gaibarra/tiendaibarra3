@@ -4,17 +4,22 @@ import { Product, ProductVariant } from '../types';
 import validateProductData from '../utils/validation';
 import { PlusIcon, TrashIcon } from './Icons';
 import ConfirmModal from './ConfirmModal';
+import { useBranding } from '../contexts/BrandingContext';
+import { getContrastColor } from '../utils/colors';
 
 const emptyVariant: Omit<ProductVariant, 'id' | 'product_id'> = { name: '', price: 0, stock: 0 };
 const emptyProduct: Omit<Product, 'created_at'> = { id: '', name: '', description: '', image_url: '', variants: [] };
 
 const ProductAdmin: React.FC = () => {
     const { products, saveProduct, deleteProduct, loading } = useShop();
+    const { branding } = useBranding();
     const [editingProduct, setEditingProduct] = useState<Product | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [imageFile, setImageFile] = useState<File | null>(null);
     const [imagePreviewUrl, setImagePreviewUrl] = useState<string | null>(null);
     const [productToDelete, setProductToDelete] = useState<string | null>(null);
+
+    const primaryButtonTextColor = getContrastColor(branding.primary_color);
 
     const handleNewProduct = () => {
         const newProduct = { ...emptyProduct, id: `new_${Date.now()}`, variants: [{ ...emptyVariant, id: `var_${Date.now()}` } as ProductVariant] };
@@ -43,11 +48,11 @@ const ProductAdmin: React.FC = () => {
                 // find variant errors
                 for (const idxStr of Object.keys(errors.variants)) {
                     const idx = Number(idxStr);
-                    const nameEl = document.querySelector(`input[name=\"name\"][data-idx=\"${idx}\"]`) as HTMLInputElement | null;
+                    const nameEl = document.querySelector(`input[name="name"][data-idx="${idx}"]`) as HTMLInputElement | null;
                     if (nameEl) { nameEl.focus(); break; }
-                    const priceEl = document.querySelector(`input[name=\"price\"][data-idx=\"${idx}\"]`) as HTMLInputElement | null;
+                    const priceEl = document.querySelector(`input[name="price"][data-idx="${idx}"]`) as HTMLInputElement | null;
                     if (priceEl) { priceEl.focus(); break; }
-                    const stockEl = document.querySelector(`input[name=\"stock\"][data-idx=\"${idx}\"]`) as HTMLInputElement | null;
+                    const stockEl = document.querySelector(`input[name="stock"][data-idx="${idx}"]`) as HTMLInputElement | null;
                     if (stockEl) { stockEl.focus(); break; }
                 }
             }
@@ -156,7 +161,7 @@ const ProductAdmin: React.FC = () => {
         const { valid, errors } = validateProduct(editingProduct);
         return (
             <div>
-                <h3 className="text-xl font-semibold mb-4">{editingProduct.id.startsWith('new_') ? 'Nuevo Producto' : 'Editar Producto'}</h3>
+                <h3 className="text-xl font-semibold mb-4 text-[var(--color-text)]">{editingProduct.id.startsWith('new_') ? 'Nuevo Producto' : 'Editar Producto'}</h3>
                 <div className="space-y-4">
                     <div>
                         <label className="block text-sm font-medium text-gray-700">Nombre</label>
@@ -219,7 +224,7 @@ const ProductAdmin: React.FC = () => {
                     </div>
                 </div>
                 <div className="mt-6 flex gap-4">
-                    <button onClick={handleSave} disabled={isSaving || !valid} className="px-4 py-2 bg-[var(--color-primary)] text-white rounded-md disabled:bg-gray-400">{isSaving ? 'Guardando...' : 'Guardar'}</button>
+                    <button onClick={handleSave} disabled={isSaving || !valid} className="px-4 py-2 bg-[var(--color-primary)] rounded-md disabled:bg-gray-400" style={{ color: primaryButtonTextColor }}>{isSaving ? 'Guardando...' : 'Guardar'}</button>
                     <button onClick={() => setEditingProduct(null)} className="px-4 py-2 bg-gray-200 rounded-md">Cancelar</button>
                 </div>
             </div>
@@ -230,7 +235,7 @@ const ProductAdmin: React.FC = () => {
         <div>
             <div className="flex justify-between items-center mb-4">
                 <h2 className="text-2xl font-bold">Inventario de Productos</h2>
-                <button onClick={handleNewProduct} className="flex items-center px-4 py-2 bg-[var(--color-primary)] text-white rounded-md"><PlusIcon/> Nuevo Producto</button>
+                <button onClick={handleNewProduct} className="flex items-center px-4 py-2 bg-[var(--color-primary)] rounded-md" style={{ color: primaryButtonTextColor }}><PlusIcon/> Nuevo Producto</button>
             </div>
             {loading ? <p>Cargando inventario...</p> :
             <div className="overflow-x-auto">
@@ -242,7 +247,7 @@ const ProductAdmin: React.FC = () => {
                             <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Acciones</th>
                         </tr>
                     </thead>
-                    <tbody className="bg-white divide-y divide-gray-200">
+                    <tbody className="bg-[var(--color-secondary)] divide-y divide-gray-200">
                         {products.map(product => (
                             <tr key={product.id}>
                                 <td className="px-6 py-4 whitespace-nowrap">
@@ -255,7 +260,7 @@ const ProductAdmin: React.FC = () => {
                                             )}
                                         </div>
                                         <div className="ml-4">
-                                            <div className="text-sm font-medium text-gray-900">{product.name}</div>
+                                            <div className="text-sm font-medium text-[var(--color-text)]">{product.name}</div>
                                         </div>
                                     </div>
                                 </td>

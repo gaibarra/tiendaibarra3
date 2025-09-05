@@ -1,13 +1,21 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useBranding } from '../contexts/BrandingContext';
 import { useShop } from '../contexts/ShopContext';
+import { useAuth } from '../contexts/AuthContext';
 import { UserCircleIcon, HomeIcon } from './Icons';
+import AdminAccessMenu from './AdminAccessMenu';
 // Note: we use a native <img> here for the header to keep a simple, reliable fallback
 
 const Header: React.FC<{ onOpenCart?: () => void }> = ({ onOpenCart }) => {
   const { branding, refreshBranding } = useBranding();
   const { cart, companyInfo, setSearchQuery } = useShop();
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/login');
+  };
   const cartItemCount = cart.reduce((count, item) => count + item.quantity, 0);
 
   const activeLinkStyle = {
@@ -111,9 +119,6 @@ const Header: React.FC<{ onOpenCart?: () => void }> = ({ onOpenCart }) => {
             <NavLink to="/" className="text-base font-medium text-gray-600 hover:text-[var(--color-primary)]" style={({ isActive }) => isActive ? activeLinkStyle : {}}>
               Tienda
             </NavLink>
-            <NavLink to="/admin" className="text-base font-medium text-gray-600 hover:text-[var(--color-primary)]" style={({ isActive }) => isActive ? activeLinkStyle : {}}>
-              Admin
-            </NavLink>
           </nav>
 
           {/* Right: actions */}
@@ -137,9 +142,26 @@ const Header: React.FC<{ onOpenCart?: () => void }> = ({ onOpenCart }) => {
               )}
             </button>
 
-            <NavLink to="/admin" className="inline-flex items-center text-gray-600 hover:text-[var(--color-primary)]">
-              <UserCircleIcon className="h-7 w-7" />
-            </NavLink>
+            <div className="flex items-center gap-2">
+              {user ? (
+                <>
+                  <span className="text-sm text-gray-700">{user.email}</span>
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-1 text-sm font-medium text-red-600 hover:bg-red-50 rounded-md"
+                  >
+                    Cerrar Sesión
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={() => navigate('/login')}
+                  className="px-3 py-1 text-sm font-medium text-[var(--color-primary)] hover:bg-blue-50 rounded-md"
+                >
+                  Iniciar Sesión
+                </button>
+              )}
+            </div>
           </div>
         </div>
       </div>

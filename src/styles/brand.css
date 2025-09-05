@@ -1,0 +1,15 @@
+:root{
+  /* Colores del logo */
+  --brand-primary: #0B3B6E;  /* azul marino */
+  --brand-accent:  #18B9C2;  /* turquesa */
+  --brand-ink:     #0B3B6E;
+
+  /* 👇 Alias para componentes existentes (CartView ya usa estos) */
+  --color-primary: var(--brand-primary);
+  --color-accent:  var(--brand-accent);
+  --color-text:    var(--brand-ink);
+}
+
+/* Mini utilidades opcionales */
+.brand-btn { background: var(--brand-primary); color:#fff; }
+.brand-chip { background: rgba(24,185,194,.12); color: var(--brand-ink); border: 1px solid var(--brand-accent); }

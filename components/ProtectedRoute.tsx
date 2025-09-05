@@ -8,7 +8,7 @@ interface ProtectedRouteProps {
 }
 
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
-  const { session, loading } = useAuth();
+  const { session, loading, user } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -22,6 +22,8 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children }) => {
   if (!session) {
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
+
+  // Basic mode: cualquier usuario autenticado pasa.
 
   return children;
 };

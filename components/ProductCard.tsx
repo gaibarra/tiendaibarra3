@@ -2,7 +2,8 @@ import React, { useState, useMemo } from 'react';
 import { Product } from '../types';
 import { useShop } from '../contexts/ShopContext';
 import { CheckCircleIcon } from './Icons';
-// Use a plain <img> for basic image rendering to simplify diagnostics
+import { useBranding } from '../contexts/BrandingContext';
+import { getContrastColor } from '../utils/colors';
 
 interface ProductCardProps {
   product: Product;
@@ -14,6 +15,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const [imageLoaded, setImageLoaded] = useState(false);
   const [quantity, setQuantity] = useState<number>(1);
   const { addToCart } = useShop();
+  const { branding } = useBranding();
 
   const selectedVariant = useMemo(() => {
     return product.variants.find(v => v.id === selectedVariantId);
@@ -35,8 +37,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
     }
   };
 
+  const primaryButtonTextColor = getContrastColor(branding.primary_color);
+
   return (
-    <div className="group relative overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm transition-shadow duration-200 hover:shadow-lg w-full mx-auto max-w-4xl">
+    <div className="group relative overflow-hidden rounded-lg border border-gray-200 bg-[var(--color-secondary)] shadow-sm transition-shadow duration-200 hover:shadow-lg w-full mx-auto max-w-4xl">
       <div className="flex flex-col md:flex-row">
   {/* Image column */}
   <div className="md:w-1/2 lg:w-1/3 p-4 md:p-6">
@@ -69,8 +73,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
         {/* Details column */}
         <div className="md:w-1/2 lg:w-2/3 p-6 flex flex-col justify-between">
           <div>
-            <h3 id={`product-title-${product.id}`} className="text-2xl font-bold text-gray-900">{product.name}</h3>
-            <p className="mt-2 text-gray-600 max-w-xl">{product.description}</p>
+            <h3 id={`product-title-${product.id}`} className="text-2xl font-bold text-[var(--color-text)]">{product.name}</h3>
+            <p className="mt-2 text-[var(--color-text)] max-w-xl">{product.description}</p>
 
             <div className="mt-4">
               <p className="price">${selectedVariant?.price.toFixed(2)} <span className="text-base font-medium text-gray-500">MXN</span></p>
@@ -88,8 +92,9 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
                         onClick={() => setSelectedVariantId(variant.id)}
                         aria-pressed={isSel}
                         className={`variant-btn px-3 py-2 rounded-md border text-sm ${isSel ? 'bg-[var(--color-primary)] text-white border-[var(--color-primary)]' : 'bg-white text-gray-700 border-gray-200'}`}
+                        style={isSel ? { color: primaryButtonTextColor } : {}}
                       >
-                        {variant.name}
+                        {variant.name} (${variant.price.toFixed(2)})
                       </button>
                     );
                   })}
@@ -110,7 +115,8 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               <button
                 onClick={() => handleAddToCart(quantity)}
                 disabled={!selectedVariant || selectedVariant.stock === 0}
-                className={`add-to-cart w-full inline-flex items-center justify-center rounded-md px-6 py-3 text-base font-medium transition-colors duration-200 ${!selectedVariant || selectedVariant.stock === 0 ? 'bg-gray-400 cursor-not-allowed text-white' : added ? 'bg-green-500 text-white' : ''}`}
+                className={`add-to-cart w-full inline-flex items-center justify-center rounded-md px-6 py-3 text-base font-medium transition-colors duration-200 ${!selectedVariant || selectedVariant.stock === 0 ? 'bg-gray-400 cursor-not-allowed' : added ? 'bg-green-500' : 'bg-[var(--color-primary)]'}`}
+                style={!selectedVariant || selectedVariant.stock === 0 ? { color: 'white'} : added ? { color: 'white'} : { color: primaryButtonTextColor }}
               >
                 {added ? (<><CheckCircleIcon /><span className="ml-2">Agregado</span></>) : selectedVariant?.stock === 0 ? 'Agotado' : 'Agregar al Carrito'}
               </button>

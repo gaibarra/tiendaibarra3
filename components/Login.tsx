@@ -1,7 +1,8 @@
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import { useBranding } from '../contexts/BrandingContext';
+import { getContrastColor } from '../utils/colors';
 
 const Login: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -9,7 +10,10 @@ const Login: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const { signIn, session } = useAuth();
+  const { branding } = useBranding();
   const navigate = useNavigate();
+
+  const primaryButtonTextColor = getContrastColor(branding.primary_color);
 
   useEffect(() => {
     if (session) {
@@ -34,9 +38,7 @@ const Login: React.FC = () => {
     <div className="flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-md space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-[var(--color-text)]">
-            Acceso de Administrador
-          </h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold tracking-tight text-[var(--color-text)]">Acceso de Administrador</h2>
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
@@ -76,11 +78,12 @@ const Login: React.FC = () => {
             </div>
           )}
 
-          <div>
+          <div className="flex flex-col gap-2">
             <button
               type="submit"
               disabled={loading}
-              className="group relative flex w-full justify-center rounded-md border border-transparent bg-[var(--color-primary)] py-2 px-4 text-base font-medium text-white hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 disabled:bg-gray-400"
+              className="group relative flex w-full justify-center rounded-md border border-transparent bg-[var(--color-primary)] py-2 px-4 text-base font-medium hover:opacity-90 focus:outline-none focus:ring-2 focus:ring-[var(--color-primary)] focus:ring-offset-2 disabled:bg-gray-400"
+              style={{ color: primaryButtonTextColor }}
             >
               {loading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
             </button>

@@ -1,0 +1,5 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Puedes definir variables CSS en otro archivo si quieres. */

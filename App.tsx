@@ -12,6 +12,7 @@ import { useShop } from './contexts/ShopContext';
 import { useBranding } from './contexts/BrandingContext';
 import Login from './components/Login';
 import ProtectedRoute from './components/ProtectedRoute';
+import Logout from './components/Logout';
 
 function GlobalError() {
     const { error: shopError } = useShop();
@@ -52,11 +53,14 @@ function App() {
             <Route path="/" element={<ProductList />} />
             <Route path="/cart" element={<CartView />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/logout" element={<Logout />} />
             <Route path="/admin" element={
               <ProtectedRoute>
                 <AdminPanel />
               </ProtectedRoute>
             } />
+            {/* Fallback: cualquier otra ruta vuelve a inicio */}
+            <Route path="*" element={<ProductList />} />
           </Routes>
         </main>
       </div>

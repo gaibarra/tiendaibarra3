@@ -40,6 +40,17 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setLoading(true);
     setError(null);
 
+    // Primer intento: usar caché local para productos para mostrar algo al instante
+    try {
+      const cached = localStorage.getItem('tiendaibarra_products_cache_v1');
+      if (cached) {
+        const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed) && parsed.length && !products.length) {
+          setProducts(parsed);
+        }
+      }
+    } catch {}
+
     if (supabaseInitializationError) {
       setError(supabaseInitializationError);
       setLoading(false);
@@ -106,6 +117,16 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       }));
 
       setProducts(productsWithImages);
+      // Cachear productos básicos (sin variantes) para siguiente visita
+      try {
+        localStorage.setItem('tiendaibarra_products_cache_v1', JSON.stringify(rawProducts.map(p => ({
+          id: p.id,
+          name: p.name,
+          description: p.description,
+          image_url: p.image_url,
+          created_at: (p as any).created_at
+        }))));
+      } catch {}
 
   if (companyInfoRes.error) throw companyInfoRes.error;
   setCompanyInfo(companyInfoRes.data);
@@ -133,7 +154,7 @@ export const ShopProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       if (existingItem) {
         return prevCart.map(cartItem =>
           cartItem.productId === item.productId && cartItem.variantId === item.variantId
-            ? { ...cartItem, quantity: cartItem.quantity + quantity }
+            ? { ...cartItem, quantity: quantity } // Set the quantity, don't add to it
             : cartItem
         );
       }

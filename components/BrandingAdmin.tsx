@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useBranding } from '../contexts/BrandingContext';
 import { supabase } from '../services/supabaseClient';
 import { Branding } from '../types';
+import { getContrastColor } from '../utils/colors';
 
 interface ColorInputProps {
     label: string;
@@ -42,6 +43,8 @@ const BrandingAdmin: React.FC = () => {
   const [uploadErrorMsg, setUploadErrorMsg] = useState<string | null>(null);
   const [uploading, setUploading] = useState<boolean>(false);
   const lastFileRef = useRef<File | null>(null);
+
+  const primaryButtonTextColor = getContrastColor(localBranding.primary_color);
 
   useEffect(() => {
     setLocalBranding(branding);
@@ -178,7 +181,7 @@ const BrandingAdmin: React.FC = () => {
 
   return (
     <div>
-      <h2 className="text-2xl font-bold mb-4">Personalización de Marca</h2>
+      <h2 className="text-2xl font-bold mb-4 text-[var(--color-text)]">Personalización de Marca</h2>
       <div className="space-y-6 max-w-lg">
         <div>
       <label className="block text-sm font-medium text-gray-700">Logo</label>
@@ -199,8 +202,9 @@ const BrandingAdmin: React.FC = () => {
           <div className="flex gap-2">
             <button
               onClick={retryUpload}
-              className="px-3 py-1 bg-[var(--color-primary)] text-white rounded disabled:opacity-60"
+              className="px-3 py-1 bg-[var(--color-primary)] rounded disabled:opacity-60"
               disabled={uploading}
+              style={{ color: primaryButtonTextColor }}
             >
               Reintentar
             </button>
@@ -232,7 +236,8 @@ const BrandingAdmin: React.FC = () => {
             <button
                 onClick={handleSave}
                 disabled={isSaving || uploading}
-                className="px-6 py-2 bg-[var(--color-primary)] text-white rounded-md shadow-sm hover:opacity-90 disabled:bg-gray-400"
+                className="px-6 py-2 bg-[var(--color-primary)] rounded-md shadow-sm hover:opacity-90 disabled:bg-gray-400"
+                style={{ color: primaryButtonTextColor }}
             >
                 {isSaving ? 'Guardando...' : 'Guardar Cambios'}
             </button>

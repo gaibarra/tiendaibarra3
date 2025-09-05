@@ -3,12 +3,17 @@ import { useShop } from '../contexts/ShopContext';
 import { Order } from '../types';
 import { ChevronDownIcon } from './Icons';
 import ConfirmModal from './ConfirmModal';
+import { useBranding } from '../contexts/BrandingContext';
+import { getContrastColor } from '../utils/colors';
 
 const OrdersAdmin: React.FC = () => {
     const { orders, confirmOrder, loading } = useShop();
+    const { branding } = useBranding();
     const [confirmingId, setConfirmingId] = useState<string | null>(null);
     const [expandedOrderId, setExpandedOrderId] = useState<string | null>(null);
     const [orderToConfirm, setOrderToConfirm] = useState<string | null>(null);
+
+    const primaryButtonTextColor = getContrastColor(branding.primary_color);
 
     const handleConfirmRequest = (orderId: string) => {
         setOrderToConfirm(orderId);
@@ -36,7 +41,7 @@ const OrdersAdmin: React.FC = () => {
         const isExpanded = expandedOrderId === order.id;
 
         return (
-            <div className="bg-white rounded-lg shadow p-4 border border-gray-200 transition-shadow hover:shadow-md">
+            <div className="bg-[var(--color-secondary)] rounded-lg shadow p-4 border border-gray-200 transition-shadow hover:shadow-md">
                 <div 
                     className="flex justify-between items-center cursor-pointer"
                     onClick={() => toggleExpand(order.id)}
@@ -44,7 +49,7 @@ const OrdersAdmin: React.FC = () => {
                     aria-controls={`order-details-${order.id}`}
                 >
                     <div>
-                        <p className="font-semibold text-gray-800">Pedido #{order.id.slice(-6)}</p>
+                        <p className="font-semibold text-[var(--color-text)]">Pedido #{order.id.slice(-6)}</p>
                         <p className="text-sm text-gray-500">{new Date(order.created_at).toLocaleString()}</p>
                     </div>
                     <div className="flex items-center gap-4">
@@ -59,12 +64,12 @@ const OrdersAdmin: React.FC = () => {
                     id={`order-details-${order.id}`}
                     className={`transition-all duration-300 ease-in-out overflow-hidden ${isExpanded ? 'max-h-[500px] pt-4 mt-4 border-t' : 'max-h-0'}`}
                 >
-                    <h4 className="text-md font-semibold text-gray-700 mb-2">Artículos del Pedido:</h4>
+                    <h4 className="text-md font-semibold text-[var(--color-text)] mb-2">Artículos del Pedido:</h4>
                     <ul className="divide-y divide-gray-100">
                         {order.order_items.map(item => (
                              <li key={item.id} className="py-3 flex justify-between items-start text-sm">
                                 <div className="flex-grow">
-                                    <p className="font-medium text-gray-800 flex items-center">
+                                    <p className="font-medium text-[var(--color-text)] flex items-center">
                                         <span className="inline-flex items-center justify-center w-6 h-6 mr-3 bg-indigo-100 text-[var(--color-primary)] text-xs font-bold rounded-full ring-2 ring-indigo-200">
                                             {item.quantity}
                                         </span>
@@ -80,12 +85,14 @@ const OrdersAdmin: React.FC = () => {
                         ))}
                     </ul>
                     <div className="mt-4 pt-4 border-t flex justify-between items-center">
-                         <p className="font-bold text-lg">Total: ${order.total.toFixed(2)}</p>
+                         <p className="font-bold text-lg text-[var(--color-text)]">Total: ${order.total.toFixed(2)}</p>
                          {order.status === 'pending' && (
                              <button 
                                 onClick={() => handleConfirmRequest(order.id)} 
                                 disabled={confirmingId === order.id}
-                                className="px-3 py-2 bg-[var(--color-primary)] text-white text-sm font-medium rounded-md hover:opacity-90 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)]">
+                                className="px-3 py-2 bg-[var(--color-primary)] text-sm font-medium rounded-md hover:opacity-90 disabled:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[var(--color-primary)]"
+                                style={{ color: primaryButtonTextColor }}
+                             >
                                  {confirmingId === order.id ? 'Confirmando...' : 'Confirmar y Descontar Stock'}
                              </button>
                          )}
@@ -97,7 +104,7 @@ const OrdersAdmin: React.FC = () => {
 
     return (
         <div>
-            <h2 className="text-2xl font-bold mb-4">Gestión de Pedidos</h2>
+            <h2 className="text-2xl font-bold mb-4 text-[var(--color-text)]">Gestión de Pedidos</h2>
             {loading ? <p>Cargando pedidos...</p> :
             orders.length === 0 ? (
                 <p className="text-gray-500">No hay pedidos todavía.</p>

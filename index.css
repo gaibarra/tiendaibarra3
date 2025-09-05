@@ -71,3 +71,14 @@ body { padding-bottom: env(safe-area-inset-bottom); }
 	/* reduce the visual footprint of the image inside the product container */
 	.product-image img, .product-image > img { max-width: 80%; }
 }
+
+/* QuickSearch multi-column description (solo cuando hay espacio suficiente) */
+@media (min-width: 430px) {
+	.qs-desc { columns: 2; column-gap: 0.75rem; }
+}
+@media (min-width: 600px) {
+	.qs-desc { columns: 3; }
+}
+/* Limita altura para evitar tarjetas muy altas si el texto es largo */
+.qs-desc { max-height: 3.8rem; overflow: hidden; }
+.qs-desc.expanded { max-height: none; }

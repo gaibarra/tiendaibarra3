@@ -1,6 +1,6 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { useShop } from '../contexts/ShopContext';
-import { generatePdf } from '../services/pdfService';
+import { generatePdf, openPdfPreview } from '../services/pdfService';
 import { sendWhatsAppOrder } from '../services/whatsappService';
 import { DownloadIcon, WhatsAppIcon } from './Icons';
 
@@ -10,10 +10,20 @@ interface OrderPreviewModalProps {
 
 const OrderPreviewModal: React.FC<OrderPreviewModalProps> = ({ onClose }) => {
   const { cart, cartTotal, companyInfo, addOrder, clearCart } = useShop();
+  // Ya no mantenemos iframe interno ni estado de carga
+
+  // Genera previsualización automática cuando se abre el modal (y hay companyInfo)
+  // Solo limpiar URL cuando se desmonta el modal
+  // Sin efecto de limpieza porque no generamos ObjectURL persistente
 
   const handleDownloadPdf = useCallback(() => {
     if (!companyInfo) return;
     generatePdf('pdf-content', `pedido-${companyInfo.name.replace(/\s/g, '_')}`);
+  }, [companyInfo]);
+
+  const handlePreview = useCallback(() => {
+    if (!companyInfo) return;
+    openPdfPreview('pdf-content', `pedido-${companyInfo.name.replace(/\s/g, '_')}`);
   }, [companyInfo]);
 
   const handleSendOrder = useCallback(async () => {
@@ -51,8 +61,8 @@ const OrderPreviewModal: React.FC<OrderPreviewModalProps> = ({ onClose }) => {
             <button onClick={onClose} className="text-gray-500 hover:text-gray-800 text-2xl leading-none">&times;</button>
         </div>
         
-        <div className="overflow-y-auto p-6" id="pdf-content">
-            <div className="p-8 border border-gray-200 rounded-md bg-white">
+    <div className="overflow-y-auto p-6" id="pdf-content">
+      <div className="p-8 border border-gray-100 rounded-md bg-white shadow-sm">
                 <div className="flex justify-between items-start mb-8">
                     <div>
                         <h1 className="text-2xl font-bold text-gray-800">{companyInfo.name}</h1>
@@ -99,16 +109,17 @@ const OrderPreviewModal: React.FC<OrderPreviewModalProps> = ({ onClose }) => {
         </div>
 
         <div className="p-4 border-t bg-gray-50">
-            <p className="text-sm text-center text-gray-600 mb-4">
-                <strong>Paso 1:</strong> Descarga el PDF. <strong>Paso 2:</strong> Envía el pedido por WhatsApp.
-            </p>
+            <p className="text-sm text-center text-gray-600 mb-4">Abre la vista previa (puedes imprimir o descargar ahí) o descarga directo.</p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <button onClick={handleDownloadPdf} className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700">
-                    <DownloadIcon /> Descargar PDF
-                </button>
-                 <button onClick={handleSendOrder} className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
-                    <WhatsAppIcon /> Enviar y Guardar Pedido
-                </button>
+              <button onClick={handlePreview} className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-blue-500 text-white rounded-md hover:bg-blue-600">
+                Abrir Vista Previa
+              </button>
+              <button onClick={handleDownloadPdf} className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-gray-600 text-white rounded-md hover:bg-gray-700">
+                <DownloadIcon /> Descargar PDF
+              </button>
+              <button onClick={handleSendOrder} className="flex items-center justify-center gap-2 w-full sm:w-auto px-6 py-3 bg-green-500 text-white rounded-md hover:bg-green-600">
+                <WhatsAppIcon /> Enviar y Guardar Pedido
+              </button>
             </div>
         </div>
       </div>
